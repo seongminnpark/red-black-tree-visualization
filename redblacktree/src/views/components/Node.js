@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import './Styles/Node.css' 
+import './Styles/Node.css';
 
 const NODE_SIZE = 50;
 
