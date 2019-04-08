@@ -71,6 +71,30 @@ export default class Tree {
         return this.nodeMap[nodeId];
     }
 
+    compile() {
+        var map = {};
+        this.compileNode(this.root, map, 0); 
+        return map;
+    }
+
+    compileNode(node, map, level) {
+
+        if (node == null) {
+            return;
+        }
+
+        // Push current node into map.
+        var levelKey = level.toString();
+        if (map[levelKey] === undefined) {
+            map[levelKey] = [];
+        } 
+        map[levelKey].push(node.id);
+
+        // Push children into node.
+        this.compileNode(node.leftChild, map, level + 1);
+        this.compileNode(node.rightChild, map, level + 1); 
+    }
+
     // Validity functions.
     
     fix(jobId) {
@@ -157,6 +181,10 @@ export default class Tree {
         var direction = node.direction;
         var rightChildLeftChild = rightChild.leftChild;
 
+        if (node.isRoot) {
+            this.root = rightChild;
+        }
+
         node.parent = rightChild;
         node.direction = Node.LEFT;
         node.rightChild = rightChildLeftChild;
@@ -168,11 +196,15 @@ export default class Tree {
 
     rotateRight(jobId, node) {
         this.logger.log(jobId, TreeLogger.ROTATE, node.id, null, Node.RIGHT); 
-        
+
         var leftChild = node.leftChild;
         var parent = node.parent;
         var direction = node.direction;
         var leftChildRightChild = leftChild.rightChild;
+
+        if (node.isRoot) {
+            this.root = leftChild;
+        }
 
         node.parent = leftChild;
         node.direction = Node.RIGHT;
@@ -180,7 +212,7 @@ export default class Tree {
 
         leftChild.parent = parent; 
         leftChild.direction = direction;
-        leftChild.rightChild = node;
+        leftChild.rightChild = node; 
     }
 
     // Visualization functions.
@@ -200,14 +232,15 @@ export default class Tree {
 
     // Insertion functions. 
     
-    insert(data) {
-        var jobId = data.toString();
+    insert(jobId, data) {
         this.logger.createEvent(jobId);
         
         // Insert node and color it red.
         var newId = this.bstInsert(jobId, this.root, data);    
-        var newNode = this.getNode(newId);
-        newNode.color = Node.RED; 
+        if (newId != null) {
+            var newNode = this.getNode(newId);
+            newNode.color = Node.RED; 
+        }
 
         // Satisfy constraints.
         this.fix(jobId); 
@@ -298,7 +331,7 @@ export class TreeLogger {
         console.log(this.logs[jobId]);
     }
 
-    log(jobId, eventId, nodeId, parentId, extra) {
+    log(jobId, eventType, nodeId, parentId, extra) {
 
         var eventLogs = this.logs[jobId];
         //var logString = eventLogs.length === 0 ? '' : ','; 
@@ -306,8 +339,12 @@ export class TreeLogger {
         var parentIdString = parentId == null ? '.' : String(parentId);
         var extraString = extra == null ? '.' : String(extra);
 
-        eventLogs.push(eventId 
+        eventLogs.push(eventType
             + ':' + nodeIdString + ':' + parentIdString 
             + ':' + extraString);
+    }
+
+    getLogs(jobId) {
+        return this.logs[jobId];
     }
 }
