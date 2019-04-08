@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import TreeTest from './core/TreeTest'
+import TreeTest from './core/tree/TreeTest'
 
-import Canvas from './views/pages/Canvas'
+import { Canvas } from './views/pages'
 
 class App extends Component {
   render() {
