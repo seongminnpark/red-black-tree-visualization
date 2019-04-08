@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import Tree from '../components/Tree';
 
-class Canvas extends Component {
+export default class Canvas extends Component {
 
     render() {
         return (
@@ -15,15 +14,3 @@ class Canvas extends Component {
         )
     }
 }
-
-const mapStateToProps = (state) => {
-    return {
-    }
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Canvas)
