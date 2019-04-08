@@ -5,6 +5,7 @@ import Jobs from '../../core/jobs/Jobs';
 
 import Tree from '../components/Tree';
 import Input from '../components/Input';
+import TextCarousel from '../components/TextCarousel';
 
 import './Styles/Canvas.css';
 
@@ -19,6 +20,7 @@ export default class Canvas extends Component {
             tree: new TreeCore(),
             jobs: new Jobs(),
             tasks: [],
+            activeTask: 0,
             nodeMap: {}
         }
     }
@@ -65,6 +67,10 @@ export default class Canvas extends Component {
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>
                 </div> 
+
+                <TextCarousel 
+                    data={this.state.tasks} 
+                    active={this.state.activeTask} />
             
             </div>
         )
