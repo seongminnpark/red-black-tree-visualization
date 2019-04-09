@@ -15,6 +15,7 @@ export class Node {
         this.direction = null;
         this.count = 1;
         this.color = Node.BLACK;
+        this.nodePath = "";
     }
 
     recolor() {
@@ -101,6 +102,7 @@ export default class Tree {
         while(this.fixNodes(jobId, this.root)) {
         
         } 
+        this.updateNodePaths(this.root, '');
     }
 
     fixNodes(jobId, node) { 
@@ -169,6 +171,24 @@ export default class Tree {
     recolor(jobId, node) {
         node.recolor();
         this.logger.log(jobId, TreeLogger.RECOLOR, node.id, null, node.color); 
+    }
+
+    updateNodePaths(node, nodePath) {
+        if (node == null) {return;} 
+
+        var newNodePath = '';
+
+        if (node.isRoot) {
+            newNodePath = '';
+
+        } else {
+            var pathStep = node.direction == Node.LEFT ? 'L' : 'R';
+            newNodePath = nodePath + pathStep;
+        }
+        node.nodePath = newNodePath;
+
+        this.updateNodePaths(node.leftChild, newNodePath);
+        this.updateNodePaths(node.rightChild, newNodePath);
     }
 
     // Rotation functions.
@@ -299,9 +319,11 @@ export default class Tree {
             this.root = newNode; 
 
         } else if (direction === Node.LEFT) {
+            newNode.nodePath = parent.nodePath + 'L';
             parent.leftChild = newNode;
 
         } else if (direction === Node.RIGHT) {
+            newNode.nodePath = parent.nodePath + 'R';
             parent.rightChild = newNode; 
         }
 

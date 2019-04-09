@@ -51,6 +51,7 @@ class Tree extends Component {
                 let nodeId = nodesAtLevel[j];
                 if (nodeId != null) {
                     var nodeObject = this.props.tree.getNode(nodeId);
+                    console.log(nodeObject.nodePath);
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
                         index={j} 
