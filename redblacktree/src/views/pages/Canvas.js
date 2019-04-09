@@ -7,6 +7,9 @@ import Tree from '../components/Tree';
 import Input from '../components/Input';
 import TextCarousel from '../components/TextCarousel';
 
+import playButton from '../../images/play.png';
+import ffButton from '../../images/ff.png';
+
 import './Styles/Canvas.css';
 
 export default class Canvas extends Component {
@@ -67,6 +70,15 @@ export default class Canvas extends Component {
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>
                 </div> 
+
+                <div className='controls'>
+                    <button id='playButton'>
+                        <img id='playButtonImage'src={playButton}/>
+                    </button>
+                    <button id='ffButton'>
+                        <img id='ffButtonImage' src={ffButton}/>
+                    </button>
+                </div>
 
                 <TextCarousel 
                     data={this.state.tasks} 
