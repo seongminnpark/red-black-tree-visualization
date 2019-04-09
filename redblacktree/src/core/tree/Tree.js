@@ -79,20 +79,20 @@ export default class Tree {
 
     compileNode(node, map, level) {
 
-        if (node == null) {
-            return;
-        }
-
         // Push current node into map.
         var levelKey = level.toString();
         if (map[levelKey] === undefined) {
             map[levelKey] = [];
         } 
-        map[levelKey].push(node.id);
-
-        // Push children into node.
-        this.compileNode(node.leftChild, map, level + 1);
-        this.compileNode(node.rightChild, map, level + 1); 
+        
+        if (node == null) {
+            map[levelKey].push(null);
+        } else {  
+            map[levelKey].push(node.id);
+            // Push children into node.
+            this.compileNode(node.leftChild, map, level + 1);
+            this.compileNode(node.rightChild, map, level + 1);
+        }
     }
 
     // Validity functions.

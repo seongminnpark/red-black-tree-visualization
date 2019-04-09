@@ -11,16 +11,13 @@ class Tree extends Component {
         super(props);
         this.handleInsert = this.handleInsert.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
-        this.state = {
-            nodeMap: {}, 
-        }
     }
 
     handleInsert(task) {
     }
 
     handleDelete(task) {
-        
+
     }
 
     render() {
@@ -39,30 +36,37 @@ class Tree extends Component {
                     break;
             }
         });
-               
+
         const nodes = [];
         const paths = [];
 
         const nodeMap = this.props.nodeMap;
-        
-        Object.getOwnPropertyNames(nodeMap).forEach(key => {
-            let value = nodeMap[key];
-            for (var i=0; i < value.length; i++) {
-                var node = (<Node id={value[i]}
-                                  level={parseInt(key)} 
-                                  index={i} 
-                                  key={value[i]}/>)
-                nodes.push(node);
+        let levels = Object.getOwnPropertyNames(nodeMap);
+        let depth = levels.length;
+        for (var i=0; i < depth; i++) {
+            let level = levels[i];
+            let nodesAtLevel = nodeMap[level];
+            for (var i=0; i < nodesAtLevel.length; i++) {
+                let nodeId = nodesAtLevel[i];
+                if (nodeId != null) {
+                    var node = (<Node id={nodeId}
+                        level={parseInt(level)} 
+                        index={i} 
+                        key={nodeId}
+                        treeDepth={depth-1}/>);
+                    nodes.push(node);
+                }
             }
-        });
+
+        }
 
         return (
-             
+
             <div className='tree'> 
-            
-                { nodes }
-                { paths }
-                                 
+
+            { nodes }
+            { paths }
+
             </div>
         )
 
