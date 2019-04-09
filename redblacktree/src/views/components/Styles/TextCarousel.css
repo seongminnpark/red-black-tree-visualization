@@ -23,6 +23,8 @@
     text-align: left;
     vertical-align: middle;
     padding: 5px;
+    overflow: hidden;
+    white-space: nowrap;
 
 }
 
