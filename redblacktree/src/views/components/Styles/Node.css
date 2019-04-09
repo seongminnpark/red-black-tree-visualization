@@ -1,4 +1,13 @@
 .node {
     border-radius: 50%;
-    display: inline-block;
+}
+
+
+.nodeData {
+    height: 50px;
+    line-height: 50px;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+
 }

@@ -41,19 +41,24 @@ class Tree extends Component {
         const paths = [];
 
         const nodeMap = this.props.nodeMap;
+        console.log(this.props.nodeMap);
         let levels = Object.getOwnPropertyNames(nodeMap);
         let depth = levels.length;
         for (var i=0; i < depth; i++) {
             let level = levels[i];
             let nodesAtLevel = nodeMap[level];
-            for (var i=0; i < nodesAtLevel.length; i++) {
-                let nodeId = nodesAtLevel[i];
+            for (var j=0; j < nodesAtLevel.length; j++) {
+                let nodeId = nodesAtLevel[j];
                 if (nodeId != null) {
+                    var nodeObject = this.props.tree.getNode(nodeId);
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
-                        index={i} 
+                        index={j} 
                         key={nodeId}
-                        treeDepth={depth-1}/>);
+                        data={nodeObject.data}
+                        nodePath={nodeObject.nodePath}
+                        color={nodeObject.color}
+                        treeDepth={depth-1}/>)
                     nodes.push(node);
                 }
             }
@@ -75,7 +80,8 @@ class Tree extends Component {
 
 Tree.propTypes = {
     tasks: PropTypes.array,
-    nodeMap: PropTypes.object
+    nodeMap: PropTypes.object,
+    tree: PropTypes.object  
 }
 
 export default Tree;

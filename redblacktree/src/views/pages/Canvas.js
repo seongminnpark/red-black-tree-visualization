@@ -65,7 +65,8 @@ export default class Canvas extends Component {
             <div className='canvas'> 
             
                 <Tree tasks={this.state.tasks}
-                      nodeMap={this.state.nodeMap}/>
+                      nodeMap={this.state.nodeMap}
+                      tree={this.state.tree}/>
                 <div className='inputGroup'>
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>

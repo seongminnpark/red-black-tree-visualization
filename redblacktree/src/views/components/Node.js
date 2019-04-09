@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import './Styles/Node.css';
 
 const NODE_SIZE = 50;
+const SLOT_SIZE = 70;
+const MARGIN = (SLOT_SIZE - NODE_SIZE) / 2.0
 
 class Node extends Component{
 
@@ -23,11 +25,18 @@ class Node extends Component{
 
         const levelWidth = 2**this.props.level;
         const direction = levelWidth / 2 - 1 > this.props.index ? 1 : -1;
+        const indexDeltaFromMiddle = Math.abs(levelWidth/2 - this.props.index);
+        const middle = 2**this.props.treeDepth / 2 * SLOT_SIZE;
+
+        const treeWidth = 2 ** this.props.treeDepth * SLOT_SIZE;
+        const indexRatio = this.props.index*1.0 / levelWidth;
         
-        var left = this.props.index * NODE_SIZE; 
-        var top = this.props.level * NODE_SIZE; 
+        var left = indexRatio * SLOT_SIZE + MARGIN; 
+        var top = this.props.level * SLOT_SIZE + MARGIN; 
         var right = left + NODE_SIZE;
         var bottom = top + NODE_SIZE;
+
+        console.log(left, top, right,bottom)
 
         var styles = {
             position: 'absolute',
@@ -35,12 +44,14 @@ class Node extends Component{
             top: top + 'px',
             width: NODE_SIZE,
             height: NODE_SIZE,
-            backgroundColor: this.color
+            backgroundColor: this.props.color
         };
 
         return (
            <div className='node' 
-                style={styles}></div>
+                style={styles}>
+            <div className='nodeData'>{this.props.data}</div> 
+            </div>
         )
     }
 }
