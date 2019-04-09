@@ -41,7 +41,6 @@ class Tree extends Component {
         const paths = [];
 
         const nodeMap = this.props.nodeMap;
-        console.log(this.props.nodeMap);
         let levels = Object.getOwnPropertyNames(nodeMap);
         let depth = levels.length;
         for (var i=0; i < depth; i++) {
@@ -51,7 +50,6 @@ class Tree extends Component {
                 let nodeId = nodesAtLevel[j];
                 if (nodeId != null) {
                     var nodeObject = this.props.tree.getNode(nodeId);
-                    console.log(nodeObject.nodePath);
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
                         index={j} 

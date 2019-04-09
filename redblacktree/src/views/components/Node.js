@@ -20,6 +20,30 @@ class Node extends Component{
     get idTextColor() { return ''; }
     
     get dataTextColor() { return ''; }
+    
+    calculateLeft(path, level, treeWidth) {
+        if (path.length != level) {
+            console.log("Funky nodepath!!!");
+        }
+
+        var maxWidth = SLOT_SIZE * treeWidth; 
+        var left = this.partitionWidth(0, treeWidth, path);
+        return left;
+    }
+
+    partitionWidth(low, high, path) {
+        console.log(path)
+        var half = (high+low) / 2.0
+        if (path == '') {
+            return half;
+
+        } else if (path[0] == 'L') {
+            return this.partitionWidth(low, half, path.slice(1));
+
+        } else {
+            return this.partitionWidth(half, high, path.slice(1));
+        }
+    }
 
     render() {
 
@@ -29,9 +53,9 @@ class Node extends Component{
         const middle = 2**this.props.treeDepth / 2 * SLOT_SIZE;
 
         const treeWidth = 2 ** this.props.treeDepth * SLOT_SIZE;
-        const indexRatio = this.props.index*1.0 / levelWidth;
         
-        var left = indexRatio * SLOT_SIZE + MARGIN; 
+        var left = this.calculateLeft(this.props.nodePath, 
+            this.props.level, treeWidth); 
         var top = this.props.level * SLOT_SIZE + MARGIN; 
         var right = left + NODE_SIZE;
         var bottom = top + NODE_SIZE;
