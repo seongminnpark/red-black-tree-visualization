@@ -11,9 +11,15 @@ class Tree extends Component {
         super(props);
         this.handleInsert = this.handleInsert.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.state = {
+            snapshot: null,
+            jobId: null,
+            taskIndex: null
+        }
     }
 
     handleInsert(task) {
+        
     }
 
     handleDelete(task) {
@@ -22,25 +28,12 @@ class Tree extends Component {
 
     render() {
 
-        var tasks = this.props.tasks;
-
-        tasks.map((task) => {
-            switch (task.type) {
-                case TreeLogger.INSERT:
-                    this.handleInsert(task);
-                    break;
-                case TreeLogger.DELETE:
-                    this.handleDelete(task);
-                    break;
-                default: 
-                    break;
-            }
-        });
-
         const nodes = [];
         const paths = [];
 
-        const nodeMap = this.props.nodeMap;
+        var snapshot = this.props.snapshots[this.props.taskId];
+
+        var nodeMap = snapshot.compile();
         let levels = Object.getOwnPropertyNames(nodeMap);
         let depth = levels.length;
         for (var i=0; i < depth; i++) {
@@ -78,8 +71,8 @@ class Tree extends Component {
 }
 
 Tree.propTypes = {
-    tasks: PropTypes.array,
-    nodeMap: PropTypes.object,
+    snapshots: PropTypes.array,
+    taskId: PropTypes.number,
     tree: PropTypes.object  
 }
 

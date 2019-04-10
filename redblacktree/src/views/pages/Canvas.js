@@ -19,40 +19,112 @@ export default class Canvas extends Component {
         super(props); 
         this.handleInsert = this.handleInsert.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.parseTasks = this.parseTasks.bind(this);
+        var tree = new TreeCore();
+        var snapshot = tree.snapshot();
         this.state = {
-            tree: new TreeCore(),
-            jobs: new Jobs(),
+            tree: tree,
             tasks: [],
-            activeTask: 0,
-            nodeMap: {}
+            taskStrings: [],
+            taskId: 0,
+            jobId: null,
+            snapshot: snapshot,
+            snapshots: [snapshot],
+            nodeMap: {},
         }
     }
 
-    parseTask(task) {
-        var taskArray = task.split(':');
-        return {
-            type: taskArray[0],
-            nodeId: taskArray[1],
-            parentId: taskArray[2], 
-            extra: taskArray[3] 
+    parseTasks(tasks) {
+        
+        var taskArray = [];
+        var taskStrings = []; 
+        
+        tasks.map((task) => {
+
+            console.log(task);
+           
+           var [type, nodeId, 
+               parentId, direction, extra] = task.split(':');
+
+           var taskObject = {
+               type : type,
+               nodeId : nodeId,
+               parentId : parentId,
+               direction : direction,
+               extra : extra,
+           }
+
+           var taskString = this.buildTaskString(taskObject); 
+        
+           taskArray.push(taskObject);
+           taskStrings.push(taskString);
+
+        });
+        console.log(taskArray);
+        console.log(taskStrings);
+
+        this.setState({
+            tasks: taskArray,
+            taskStrings: taskStrings
+        });
+    }
+
+    buildTaskString(task) {
+        var taskString = '';
+        switch (task.type) {
+            case TreeLogger.LOOK:
+                taskString = 'Look at node ' + task.nodeId;
+                break;
+            case TreeLogger.COMPARE:
+                taskString = 'Compare with node ' + task.nodeId;
+                break;
+            case TreeLogger.ROTATE:
+                taskString = 'Rotate node ' + task.nodeId + ' ' + task.direction;
+                break;
+            case TreeLogger.ERROR: 
+                taskString = 'Found error at node ' + task.nodeId;
+                break;
+            case TreeLogger.RECOLOR: 
+                taskString = 'Recolor node ' + task.nodeId;
+                break;
+            case TreeLogger.INSERT: 
+                taskString = 'Insert ' + task.extra;
+                break;
+            case TreeLogger.DELETE:
+                taskString = 'Delete ' + task.extra;
+                break;
+            default: 
+                break;
         }
+        return taskString;
     }
     
     handleInsert(data) {
 
+        var snapshot = this.state.snapshot;
+
+        if (snapshot == null) {
+            snapshot = this.state.tree.snapshot();
+        }
+    
         var jobId = data.toString() + ':' + Tree.INSERT;
-        this.state.jobs.addJob(jobId);
 
         this.state.tree.insert(jobId, data);
 
         var tasks = this.state.tree.logger.getLogs(jobId);
-        tasks.map((task) => { 
-            this.state.jobs.addTask(jobId, this.parseTask(task)); 
+        this.parseTasks(tasks);
+
+        var snapshots = [snapshot];
+        tasks.map((task) => {  
+            snapshots.push(snapshot.getSnapshotFromDiff(task));
         });
 
         this.setState({
-            nodeMap: this.state.tree.compile(),
-            tasks: this.state.jobs.getTasks(jobId)
+            //nodeMap: this.state.tree.compile(),
+            jobId: jobId,
+            taskIndex: 0,
+            snapshot: snapshot,
+            snapshots: snapshots
         });
     }
 
@@ -64,8 +136,8 @@ export default class Canvas extends Component {
         return (
             <div className='canvas'> 
             
-                <Tree tasks={this.state.tasks}
-                      nodeMap={this.state.nodeMap}
+                <Tree snapshots={this.state.snapshots}
+                      taskId={this.state.taskId}
                       tree={this.state.tree}/>
                 <div className='inputGroup'>
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
@@ -82,8 +154,8 @@ export default class Canvas extends Component {
                 </div>
 
                 <TextCarousel 
-                    data={this.state.tasks} 
-                    active={this.state.activeTask} />
+                    data={this.state.taskStrings} 
+                    active={this.state.taskIndex} />
             
             </div>
         )

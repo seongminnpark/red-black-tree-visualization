@@ -16,16 +16,15 @@ class TextCarousel extends Component {
 
         var items = [];
 
-        this.props.data.map((item) => {
-        
-            const itemText = item.type + ' node ' + item.nodeId + 
-                             ' at node ' + item.parentId + '.';
+        console.log(this.props.data);
 
-            console.log(itemText)
+        this.props.data.map((item, i) => {
+        
+            console.log(item)
             items.push(
                 <div className='carouselItem' 
-                     key={item.type + item.nodeId}>
-                    {itemText}
+                     key={'ci' + i.toString()}>
+                    {item}
                 </div>
             )
         });

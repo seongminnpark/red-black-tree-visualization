@@ -1,3 +1,5 @@
+import cloneDeep from "lodash/cloneDeep";
+
 export class Node {
     
     static get ROOT() { return 'ROOT'; }
@@ -14,7 +16,7 @@ export class Node {
         this.parent = null;
         this.direction = null;
         this.count = 1;
-        this.color = Node.BLACK;
+        this.color = Node.RED;
         this.nodePath = "";
     }
 
@@ -69,7 +71,12 @@ export default class Tree {
     // Getter functions. 
     
     getNode(nodeId) {
-        return this.nodeMap[nodeId];
+        var node = this.nodeMap[nodeId];
+        if (typeof node !== 'undefined') {
+            return null;
+        } else {
+            return node;
+        }
     }
 
     compile() {
@@ -126,51 +133,60 @@ export default class Tree {
        
         if (node.isRoot && node.color === Node.RED) { 
             // Case 1 - Node is root.
-            this.logger.log(jobId, TreeLogger.ERROR, node.id, null, 1); 
-            this.recolor(jobId, node);
+            this.logger.log(jobId, TreeLogger.ERROR, node.id, null, null, 1); 
+            node.recolor();
+            this.logger.log(jobId, TreeLogger.RECOLOR, node.id, null, null, node.color); 
             return true;
             
         } else if (uncle != null && uncle.color === Node.RED) { 
             // Case 2 - Uncle is red.
-            this.logger.log(jobId, TreeLogger.ERROR, node.id, null, 2); 
+            this.logger.log(jobId, TreeLogger.ERROR, node.id, null, null, 2); 
+
             parent.recolor();
+            this.logger.log(jobId, TreeLogger.RECOLOR, parent.id, null, null, parent.color); 
+
             grandParent.recolor();
+            this.logger.log(jobId, TreeLogger.RECOLOR, grandParent.id, null, null, grandParent.color); 
+            
             uncle.recolor();
+            this.logger.log(jobId, TreeLogger.RECOLOR, uncle.id, null, null, uncle.color); 
             return true;
         
         } else if (uncle == null || uncle.color === Node.BLACK) {  
             if (parent.color === Node.RED && 
                 parent.direction !== node.direction) {
                 // Case 3 - Uncle is black and triangle exists.
-                this.logger.log(jobId, TreeLogger.ERROR, node.id, null, 3); 
-                if (node.direction === Node.LEFT) {
-                    this.rotateRight(jobId, parent);
-                } else {
-                    this.rotateLeft(jobId, parent);
+                this.logger.log(jobId, TreeLogger.ERROR, node.id, null, null, 3); 
+                if (node.direction === Node.LEFT) { 
+                    this.logger.log(jobId, TreeLogger.ROTATE, parent.id, null, Node.RIGHT, null); 
+                    this.rotateRight(parent);
+                } else { 
+                    this.logger.log(jobId, TreeLogger.ROTATE, parent.id, null, Node.LEFT, null); 
+                    this.rotateLeft(parent);
                 }
                 return true; 
                 
             } else if (parent.color === Node.RED && 
                 parent.direction === node.direction) {
                 // Case 4 - Unlce is black and line exists.
-                this.logger.log(jobId, TreeLogger.ERROR, node.id, null, 4); 
+                this.logger.log(jobId, TreeLogger.ERROR, node.id, null, null, 4); 
                 if (node.direction === Node.LEFT) {
-                    this.rotateRight(jobId, grandParent);
+                    this.logger.log(jobId, TreeLogger.ROTATE, grandParent.id, null, Node.RIGHT, null); 
+                    this.rotateRight(grandParent);
                 } else {
-                    this.rotateLeft(jobId, grandParent);
-                }
-                this.recolor(jobId, grandParent);
-                this.recolor(jobId, parent);
+                    this.logger.log(jobId, TreeLogger.ROTATE, grandParent.id, null, Node.LEFT, null); 
+                    this.rotateLeft(grandParent);
+                } 
+                
+                grandParent.recolor(); 
+                this.logger.log(jobId, TreeLogger.RECOLOR, grandParent.id, null,  null, grandParent.color); 
+                parent.recolor();
+                this.logger.log(jobId, TreeLogger.RECOLOR, parent.id, null, null, parent.color); 
                 return true;
             }
         }
 
         return false;
-    }
-
-    recolor(jobId, node) {
-        node.recolor();
-        this.logger.log(jobId, TreeLogger.RECOLOR, node.id, null, node.color); 
     }
 
     updateNodePaths(node, nodePath) {
@@ -193,8 +209,7 @@ export default class Tree {
 
     // Rotation functions.
     
-    rotateLeft(jobId, node) {
-        this.logger.log(jobId, TreeLogger.ROTATE, node.id, null, Node.LEFT); 
+    rotateLeft(node) {
 
         var rightChild = node.rightChild;
         var parent = node.parent;
@@ -214,8 +229,7 @@ export default class Tree {
         rightChild.leftChild = node;
     }
 
-    rotateRight(jobId, node) {
-        this.logger.log(jobId, TreeLogger.ROTATE, node.id, null, Node.RIGHT); 
+    rotateRight(node) {
 
         var leftChild = node.leftChild;
         var parent = node.parent;
@@ -257,10 +271,6 @@ export default class Tree {
         
         // Insert node and color it red.
         var newId = this.bstInsert(jobId, this.root, data);    
-        if (newId != null) {
-            var newNode = this.getNode(newId);
-            newNode.color = Node.RED; 
-        }
 
         // Satisfy constraints.
         this.fix(jobId); 
@@ -269,21 +279,26 @@ export default class Tree {
     bstInsert(jobId, node, data) {
 
         if (node == null) {
-            return this.insertAt(jobId, node, Node.ROOT, data);
+            var newId = this.insertAt(node, Node.ROOT, data);
+            this.logger.log(jobId, TreeLogger.INSERT, newId, null, Node.ROOT, data);
+            return newId;
 
         } else {
 
-            this.logger.log(jobId, TreeLogger.LOOK, node.id, null, null);
+            this.logger.log(jobId, TreeLogger.LOOK, node.id, null, null, null);
 
             if (node.data === data) {
-                this.logger.log(jobId, TreeLogger.COMPARE, node.id, null, null);
+                this.logger.log(jobId, TreeLogger.COMPARE, node.id, null, null, null);
                 node.count += 1;
                 return null;
 
             } else if (node.data > data) {
 
-                if (node.leftChild == null) {
-                    return this.insertAt(jobId, node, Node.LEFT, data);
+                if (node.leftChild == null) { 
+                    var newId = this.insertAt(node, Node.LEFT, data);
+                    this.logger.log(jobId, TreeLogger.INSERT, newId, node.id, Node.LEFT, data);
+                    return newId;
+
                 } else {
                     return this.bstInsert(jobId, node.leftChild, data);
                 }
@@ -291,7 +306,9 @@ export default class Tree {
             } else {
 
                 if (node.rightChild == null) {
-                    return this.insertAt(jobId, node, Node.RIGHT, data); 
+                    var newId = this.insertAt(node, Node.RIGHT, data); 
+                    this.logger.log(jobId, TreeLogger.INSERT, newId, node.id, Node.RIGHT, data);
+                    return newId;
                 } else {
                     return this.bstInsert(jobId, node.rightChild, data);
                 }
@@ -300,7 +317,7 @@ export default class Tree {
 
     }
 
-    insertAt(jobId, parent, direction, data) {
+    insertAt(parent, direction, data) {
 
         var newNode = new Node();
         newNode.data = data;
@@ -311,9 +328,6 @@ export default class Tree {
         this.nodeMap[newId] = newNode;
         
         var parentId = parent == null ? null : parent.id;
-
-        this.logger.log(jobId, TreeLogger.INSERT, 
-            newId, parentId, direction);
 
         if (direction === Node.ROOT) {
             this.root = newNode; 
@@ -328,14 +342,56 @@ export default class Tree {
         }
 
         return newId;
+    }
+
+    // Incremental update functions.
+    getSnapshotFromDiff(log) {
+
+        var snapshot = this.snapshot();
+
+        var [jobId, eventType, nodeId, parentId, direction, extra] = log.split(':');
+
+        var node = snapshot.getNode(nodeId);
+        var parent = snapshot.getNode(parentId);
+        
+        switch (eventType) {
+
+            case TreeLogger.LOOK:
+                break;
+
+            case TreeLogger.INSERT:
+                snapshot.insertAt(parent, direction, extra);
+                break;
+
+            case TreeLogger.ROTATE:
+                if (direction == Node.LEFT) { 
+                    snapshot.rotateLeft(node);
+                } else {
+                    snapshot.rotateRight(node);
+                }
+                break;
+
+            case TreeLogger.ERROR:
+                break;
+
+            case TreeLogger.RECOLOR: 
+                node.recolor(); 
+                break;
+        } 
+
+        return snapshot;
 
     }
 
+    snapshot() {       
+       return cloneDeep(this); 
+    }
 }
 
 export class TreeLogger {
 
     static get LOOK() { return 'LOOK'; }
+    static get COMPARE() { return 'COMPARE'; }
     static get INSERT() { return 'INSERT'; }
     static get ROTATE() { return 'ROTATE'; }
     static get ERROR() { return 'ERROR'; }
@@ -353,17 +409,18 @@ export class TreeLogger {
         console.log(this.logs[jobId]);
     }
 
-    log(jobId, eventType, nodeId, parentId, extra) {
+    log(jobId, eventType, nodeId, parentId, direction, extra) {
 
         var eventLogs = this.logs[jobId];
-        //var logString = eventLogs.length === 0 ? '' : ','; 
-        var nodeIdString = nodeId == null ? '.' : String(nodeId);
-        var parentIdString = parentId == null ? '.' : String(parentId);
-        var extraString = extra == null ? '.' : String(extra);
+        //var logString = eventLogs.length === 0 ? '' : 'null'; 
+        var nodeIdString = nodeId == null ? 'null' : String(nodeId);
+        var parentIdString = parentId == null ? 'null' : String(parentId);
+        var directionString = direction == null ? 'null' : String(direction);
+        var extraString = extra == null ? 'null' : String(extra);
 
         eventLogs.push(eventType
             + ':' + nodeIdString + ':' + parentIdString 
-            + ':' + extraString);
+            + ':' + directionString + ':' + extraString);
     }
 
     getLogs(jobId) {
