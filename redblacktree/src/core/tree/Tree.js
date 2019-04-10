@@ -71,8 +71,11 @@ export default class Tree {
     // Getter functions. 
     
     getNode(nodeId) {
+        if (nodeId == null || nodeId === 'null') {
+            return null;
+        }
         var node = this.nodeMap[nodeId];
-        if (typeof node !== 'undefined') {
+        if (typeof node === 'undefined') {
             return null;
         } else {
             return node;
@@ -322,7 +325,7 @@ export default class Tree {
         var newNode = new Node();
         newNode.data = data;
         newNode.parent = parent;
-        var newId = Math.random().toString(36).slice(2);
+        var newId = 'id' + data.toString();
         newNode.id = newId;
         newNode.direction = direction;
         this.nodeMap[newId] = newNode;
@@ -349,7 +352,7 @@ export default class Tree {
 
         var snapshot = this.snapshot();
 
-        var [jobId, eventType, nodeId, parentId, direction, extra] = log.split(':');
+        var [eventType, nodeId, parentId, direction, extra] = log.split(':');
 
         var node = snapshot.getNode(nodeId);
         var parent = snapshot.getNode(parentId);

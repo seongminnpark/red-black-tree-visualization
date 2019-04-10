@@ -97,10 +97,10 @@ export default class Canvas extends Component {
     
     handleInsert(data) {
 
-        var snapshot = this.state.snapshot;
+        var originalSnapshot = this.state.snapshot;
 
-        if (snapshot == null) {
-            snapshot = this.state.tree.snapshot();
+        if (originalSnapshot  == null) {
+            originalSnapshot = this.state.tree.snapshot();
         }
     
         var jobId = data.toString() + ':' + Tree.INSERT;
@@ -110,9 +110,11 @@ export default class Canvas extends Component {
         var tasks = this.state.tree.logger.getLogs(jobId);
         this.parseTasks(tasks);
 
-        var snapshots = [snapshot];
+        var snapshots = [];
+        var snapshot = originalSnapshot; 
         tasks.map((task) => {  
-            snapshots.push(snapshot.getSnapshotFromDiff(task));
+            snapshot = snapshot.getSnapshotFromDiff(task);
+            snapshots.push(snapshot);
         });
 
         this.setState({
