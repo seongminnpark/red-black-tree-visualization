@@ -32,7 +32,6 @@ class Node extends Component{
     }
 
     partitionWidth(low, high, path) {
-        console.log(path)
         var half = (high+low) / 2.0
         if (path == '') {
             return half;
@@ -59,8 +58,6 @@ class Node extends Component{
         var top = this.props.level * SLOT_SIZE + MARGIN; 
         var right = left + NODE_SIZE;
         var bottom = top + NODE_SIZE;
-
-        console.log(left, top, right,bottom)
 
         var styles = {
             position: 'absolute',

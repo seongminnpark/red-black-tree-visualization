@@ -20,6 +20,7 @@ export default class Canvas extends Component {
         this.handleInsert = this.handleInsert.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.parseTasks = this.parseTasks.bind(this);
+        this.handleFFClick = this.handleFFClick.bind(this);
         var tree = new TreeCore();
         var snapshot = tree.snapshot();
         this.state = {
@@ -130,6 +131,16 @@ export default class Canvas extends Component {
 
     }
 
+    handleFFClick() {
+        var taskId = this.state.taskId;
+        console.log(taskId, this.state.tree);
+        var tasks = this.state.tasks; 
+        if (taskId < tasks.length -1) {
+            taskId += 1;
+        }
+        this.setState({taskId: taskId});
+    }
+
     render() {
         return (
             <div className='canvas'> 
@@ -146,7 +157,7 @@ export default class Canvas extends Component {
                     <button id='playButton'>
                         <img id='playButtonImage'src={playButton}/>
                     </button>
-                    <button id='ffButton'>
+                    <button id='ffButton' onClick={this.handleFFClick}>
                         <img id='ffButtonImage' src={ffButton}/>
                     </button>
                 </div>
