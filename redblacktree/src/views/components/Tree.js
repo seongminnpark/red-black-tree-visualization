@@ -20,6 +20,7 @@ class Tree extends Component {
 
     handleInsert(task) {
         
+        
     }
 
     handleDelete(task) {
@@ -33,6 +34,7 @@ class Tree extends Component {
 
         var snapshot = this.props.snapshots[this.props.taskId];
 
+        console.log(snapshot);
         var nodeMap = snapshot.compile();
         let levels = Object.getOwnPropertyNames(nodeMap);
         let depth = levels.length;

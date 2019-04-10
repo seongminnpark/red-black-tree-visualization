@@ -16,11 +16,8 @@ class TextCarousel extends Component {
 
         var items = [];
 
-        console.log(this.props.data);
-
         this.props.data.map((item, i) => {
         
-            console.log(item)
             items.push(
                 <div className='carouselItem' 
                      key={'ci' + i.toString()}>

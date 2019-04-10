@@ -40,8 +40,6 @@ export default class Canvas extends Component {
         var taskStrings = []; 
         
         tasks.map((task) => {
-
-            console.log(task);
            
            var [type, nodeId, 
                parentId, direction, extra] = task.split(':');
@@ -60,8 +58,6 @@ export default class Canvas extends Component {
            taskStrings.push(taskString);
 
         });
-        console.log(taskArray);
-        console.log(taskStrings);
 
         this.setState({
             tasks: taskArray,
@@ -122,7 +118,7 @@ export default class Canvas extends Component {
         this.setState({
             //nodeMap: this.state.tree.compile(),
             jobId: jobId,
-            taskIndex: 0,
+            taskId: 0,
             snapshot: snapshot,
             snapshots: snapshots
         });
