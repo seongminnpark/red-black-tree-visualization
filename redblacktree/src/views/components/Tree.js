@@ -43,7 +43,7 @@ class Tree extends Component {
             for (var j=0; j < nodesAtLevel.length; j++) {
                 let nodeId = nodesAtLevel[j];
                 if (nodeId != null) {
-                    var nodeObject = this.props.tree.getNode(nodeId);
+                    var nodeObject = snapshot.getNode(nodeId);
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
                         index={j} 

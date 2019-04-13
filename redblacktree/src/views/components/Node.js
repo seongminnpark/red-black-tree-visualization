@@ -58,6 +58,7 @@ class Node extends Component{
         var top = this.props.level * SLOT_SIZE + MARGIN; 
         var right = left + NODE_SIZE;
         var bottom = top + NODE_SIZE;
+        console.log(this.props.color);
 
         var styles = {
             position: 'absolute',
