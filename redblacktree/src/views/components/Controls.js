@@ -8,63 +8,73 @@ import right from '../../images/right.png';
 import './Styles/Controls.css';
 
 function NextArrow(props) {
-		  const { className, style, onClick } = props;
-		  return (
-			      <img src={right}
-			  style={{ ...style, display: "block"}}
-			  onClick={onClick}
-			      />
-			    );
-	}
+    return (
+        <img src={right}
+        style={{ ...props.style, display: "block"}}
+        onClick={() => {
+            if (props.onClick != null) {
+                props.onClick();
+            }
+            props.onNext();
+        }}
+        />
+    );
+}
 
-	function PrevArrow(props) {
-		  const { className, style, onClick } = props;
-		  return (
-			      <img src={left}
-			  style={{ ...style, display: "block"}}
-			  onClick={onClick}
-			      />
-			    );
-	}
+function PrevArrow(props) {
+    return (
+        <img src={left}
+        style={{ ...props.style, display: "block"}}
+        onClick={() => {
+            if (props.onClick != null) {
+                props.onClick();
+            }
+            props.onPrev();
+        }}
+        />
+    );
+}
 
 class Controls extends Component {
 
-	render() {
-		var items = [];
+    render() {
+        var items = [];
 
-		var settings = {
-			dots: false, 
-			infinite: false, 
-			speed: 500,
-			vertical: true,
-			className: 'controls',
-			arrows: true,
-			nextArrow: <NextArrow/>,
-			prevArrow: <PrevArrow/>,
-		};
+        var settings = {
+            dots: false, 
+            infinite: false, 
+            speed: 500,
+            vertical: true,
+            className: 'controls',
+            arrows: true,
+            nextArrow: <NextArrow onNext={this.props.onNext}/>,
+            prevArrow: <PrevArrow onPrev={this.props.onPrev}/>,
+        };
 
-		this.props.data.map((item, i) => {
-			items.push(
-				<div
-					key={'ci' + i.toString()}>
-				{item}
-				</div>)
+        this.props.data.map((item, i) => {
+            items.push(
+                <div
+                key={'ci' + i.toString()}>
+                {item}
+                </div>)
 
-		});
+        });
 
-		return (
-			<div>
-				<Slider {...settings}>
-					{items}
-				</Slider>
-			</div>
-		)
-	}
+        return (
+            <div>
+            <Slider {...settings}>
+            {items}
+            </Slider>
+            </div>
+        )
+    }
 }
 
 Controls.propTypes = {
-	active: PropTypes.number, 
-	data: PropTypes.array
+    active: PropTypes.number, 
+    data: PropTypes.array,
+    onNext: PropTypes.func,
+    onPrev: PropTypes.func
 };
 
 export default Controls;
