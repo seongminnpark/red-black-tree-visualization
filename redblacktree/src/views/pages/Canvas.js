@@ -5,7 +5,7 @@ import Jobs from '../../core/jobs/Jobs';
 
 import Tree from '../components/Tree';
 import Input from '../components/Input';
-import TextCarousel from '../components/TextCarousel';
+import Controls from '../components/Controls';
 
 import playButton from '../../images/play.png';
 import ffButton from '../../images/ff.png';
@@ -153,16 +153,7 @@ export default class Canvas extends Component {
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>
                 </div> 
 
-                <div className='controls'>
-                    <button id='playButton'>
-                        <img id='playButtonImage'src={playButton}/>
-                    </button>
-                    <button id='ffButton' onClick={this.handleFFClick}>
-                        <img id='ffButtonImage' src={ffButton}/>
-                    </button>
-                </div>
-
-                <TextCarousel 
+                <Controls
                     data={this.state.taskStrings} 
                     active={this.state.taskIndex} />
             

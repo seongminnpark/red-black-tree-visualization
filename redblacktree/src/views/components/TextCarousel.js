@@ -1,54 +1,58 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Slider from "react-slick";
 
 import './Styles/TextCarousel.css';
 
 class TextCarousel extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
+	constructor(props) {
+		super(props);
+		this.state = {
 
-        }
-    }
+		}
+	}
 
-    render() {
+	render() {
 
-        var items = [];
+		var items = [];
 
-        this.props.data.map((item, i) => {
-        
-            items.push(
-                <div className='carouselItem' 
-                     key={'ci' + i.toString()}>
-                    {item}
-                </div>
-            )
-        });
+		var settings = {
+			dots: false,
+			infinite: false,
+			speed: 500,
+			vertical: true
+		};
 
-        return (
-            <div className='textCarousel'>
+		this.props.data.map((item, i) => {
 
-                <div className='cursor'>
-                    >
-                </div>
-                
-                <div className='textContainer'>
-                    { items }
-                </div>
-               
-            </div>
-        )
-    }
+			items.push(
+				<div className='carouselItem' 
+				key={'ci' + i.toString()}>
+				{item}
+				</div>
+			)
+		});
 
-    
+		return (
+			<div className='textCarousel'>
+
+			<Slider {...settings}>
+				{items}
+			</Slider>
+
+			</div>
+		)
+	}
+
+
 
 }
 
 
 TextCarousel.propTypes = {
-    active: PropTypes.number,
-    data: PropTypes.array
+	active: PropTypes.number,
+	data: PropTypes.array
 };
 
 export default TextCarousel;
