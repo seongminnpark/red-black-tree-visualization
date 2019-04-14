@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 
 import './Styles/Node.css';
 
-const NODE_SIZE = 50;
 const SLOT_SIZE = 70;
-const MARGIN = (SLOT_SIZE - NODE_SIZE) / 2.0
 
 class Node extends Component{
 
+    static get SIZE() { return 50; }
     static get RED() { return '#f45a67'; } 
     static get BLACK() { return '#332425'; } 
 
@@ -46,25 +45,19 @@ class Node extends Component{
 
     render() {
 
-        const levelWidth = 2**this.props.level;
-        const direction = levelWidth / 2 - 1 > this.props.index ? 1 : -1;
-        const indexDeltaFromMiddle = Math.abs(levelWidth/2 - this.props.index);
-        const middle = 2**this.props.treeDepth / 2 * SLOT_SIZE;
+        const halfSize = Node.SIZE / 2;
 
-        const treeWidth = 2 ** this.props.treeDepth * SLOT_SIZE;
-        
-        var left = this.calculateLeft(this.props.nodePath, 
-            this.props.level, treeWidth); 
-        var top = this.props.level * SLOT_SIZE + MARGIN; 
-        var right = left + NODE_SIZE;
-        var bottom = top + NODE_SIZE;
+        var left = this.props.x - halfSize;
+        var right = this.props.x + halfSize;
+        var top = this.props.y - halfSize;
+        var bottom = this.props.y - halfSize;
 
         var styles = {
             position: 'absolute',
             left: left + 'px',
             top: top + 'px',
-            width: NODE_SIZE,
-            height: NODE_SIZE,
+            width: Node.SIZE,
+            height: Node.SIZE,
             backgroundColor: this.props.color
         };
 
@@ -81,7 +74,9 @@ Node.propTypes = {
     id: PropTypes.string,
     level: PropTypes.number,
     index: PropTypes.number,
-    treeDepth: PropTypes.number
+    treeDepth: PropTypes.number,
+    x: PropTypes.number,
+    y: PropTypes.number,
 };
 
 export default Node;

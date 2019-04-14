@@ -96,9 +96,7 @@ export default class Tree {
             map[levelKey] = [];
         } 
         
-        if (node == null) {
-            map[levelKey].push(null);
-        } else {  
+        if (node != null) {
             map[levelKey].push(node.id);
             // Push children into node.
             this.compileNode(node.leftChild, map, level + 1);
@@ -226,10 +224,15 @@ export default class Tree {
         node.parent = rightChild;
         node.direction = Node.LEFT;
         node.rightChild = rightChildLeftChild;
+        if (rightChildLeftChild != null) {       
+            rightChildLeftChild.parent = node;
+        }
 
         rightChild.parent = parent; 
         rightChild.direction = direction;
         rightChild.leftChild = node;
+
+        this.updateNodePaths(this.root, '');
     }
 
     rotateRight(node) {
@@ -246,10 +249,17 @@ export default class Tree {
         node.parent = leftChild;
         node.direction = Node.RIGHT;
         node.leftChild = leftChildRightChild;
+        leftChildRightChild.parent = node;
+
+        if (leftChildRightChild != null) {       
+            leftChildRightChild.parent = node;
+        }
 
         leftChild.parent = parent; 
         leftChild.direction = direction;
         leftChild.rightChild = node; 
+
+        this.updateNodePaths(this.root, '');
     }
 
     // Visualization functions.

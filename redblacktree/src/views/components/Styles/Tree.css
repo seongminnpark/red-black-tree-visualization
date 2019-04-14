@@ -1,5 +1,9 @@
-.tree {
+.treeContainer {
     width: 100%;
     height: 70%;
-    position: absolute;
+}
+
+.tree {
+    width: 100%;
+    height: 100%;
 }
