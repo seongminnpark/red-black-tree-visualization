@@ -64,8 +64,6 @@ class Tree extends Component {
         const paths = [];
 
         var snapshot = this.props.snapshots[this.props.taskId];
-
-
         var width = this.state.dimensions.width;
         var height = this.state.dimensions.height;
 
@@ -81,6 +79,7 @@ class Tree extends Component {
                 let nodeId = nodesAtLevel[j];
                 if (nodeId != null) {
                     var nodeObj = snapshot.getNode(nodeId);
+                    //console.log(nodeObj);
                     var x = this.calculateX(nodeObj.nodePath, level, width);
                     var y = level * Node.SIZE;
                     var node = (<Node id={nodeId}

@@ -174,7 +174,7 @@ export default class Tree {
                 if (node.direction === Node.LEFT) {
                     this.logger.log(jobId, TreeLogger.ROTATE, grandParent.id, null, Node.RIGHT, null); 
                     this.rotateRight(grandParent);
-                } else {
+                } else { 
                     this.logger.log(jobId, TreeLogger.ROTATE, grandParent.id, null, Node.LEFT, null); 
                     this.rotateLeft(grandParent);
                 } 
@@ -232,6 +232,14 @@ export default class Tree {
         rightChild.direction = direction;
         rightChild.leftChild = node;
 
+        if (parent != null) {
+            if (direction == Node.LEFT) {
+                parent.leftChild = rightChild;
+            } else {
+                parent.rightChild = rightChild;
+            }
+        }
+
         this.updateNodePaths(this.root, '');
     }
 
@@ -249,8 +257,6 @@ export default class Tree {
         node.parent = leftChild;
         node.direction = Node.RIGHT;
         node.leftChild = leftChildRightChild;
-        leftChildRightChild.parent = node;
-
         if (leftChildRightChild != null) {       
             leftChildRightChild.parent = node;
         }
@@ -258,6 +264,14 @@ export default class Tree {
         leftChild.parent = parent; 
         leftChild.direction = direction;
         leftChild.rightChild = node; 
+
+        if (parent != null) {
+            if (direction == Node.LEFT) {
+                parent.leftChild = leftChild;
+            } else {
+                parent.rightChild = leftChild;
+            }
+        }
 
         this.updateNodePaths(this.root, '');
     }
@@ -272,7 +286,6 @@ export default class Tree {
         if (node == null) {
             return;
         }
-        console.log(node.data, node.color);
         this.printSubtree(node.leftChild);
         this.printSubtree(node.rightChild);
     } 
