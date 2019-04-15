@@ -421,6 +421,35 @@ export default class Tree {
     snapshot() {       
        return cloneDeep(this); 
     }
+
+    getPathMap() {
+        var pathMap = {}
+        this.getPathMapRecursive(this.root, pathMap);
+        return pathMap;
+    }
+
+    getPathMapRecursive(node, map) {
+
+        if (node == null) {return map}
+
+        var leftChild = node.leftChild;
+        var rightChild = node.rightChild;
+        
+        if (leftChild != null) {
+            var id = node.id + leftChild.id; 
+            map[id] = {from: node.id, to:leftChild.id}
+
+            this.getPathMapRecursive(this.leftChild, map);
+        }
+
+        if (rightChild != null) {
+            var id = node.id + rightChild.id; 
+            map[id] = {from: node.id, to:rightChild.id}
+
+            this.getPathMapRecursive(this.rightChild, map);
+        }
+
+    }
 }
 
 export class TreeLogger {

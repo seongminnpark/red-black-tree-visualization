@@ -5,6 +5,7 @@ import TransitionGroup from 'react-addons-transition-group';
 import './Styles/Tree.css';
 import TreeCore, { NodeCore, TreeLogger } from '../../core/tree/Tree';
 import Node from './Node';
+import Path from './Path';
 
 
 class Tree extends Component { 
@@ -19,8 +20,10 @@ class Tree extends Component {
             snapshot: null,
             dimension: null,
             nodes: [],
+            paths: [],
             prevTaskId: 0,
-            prevNodes: {}
+            prevNodes: {},
+            prevPaths: {}
         }
     }
 
@@ -85,7 +88,8 @@ class Tree extends Component {
         let levels = Object.getOwnPropertyNames(nodeMap);
         let depth = levels.length;
         let treeDepth = depth-1;
-
+        
+        // Create nodes.
         for (var i=0; i < depth; i++) {
             let level = levels[i];
             let nodesAtLevel = nodeMap[level];
@@ -123,19 +127,74 @@ class Tree extends Component {
             }
 
         }
- 
-        this.setState({nodes: nodes, prevNodes: prevNodes});
+
+        var paths = [];
+        var prevPaths = {};
+
+        var pathMap = to.getPathMap();
+        var prevPathMap = from.getPathMap(); 
+        var pathIds = Object.getOwnPropertyNames(pathMap);
+
+        console.log(pathIds)
+        // Create paths.
+        for (var i=0; i < pathIds.length; i++) {
+            var path = pathMap[pathIds[i]];
+
+            var fromNode = to.getNode(path.from);
+            var toNode = to.getNode(path.to);
+            var pathId = fromNode.id + toNode.id;
+
+            var fromX = prevNodes[fromNode.id].x;
+            var fromY = prevNodes[fromNode.id].y;
+            var toX = prevNodes[toNode.id].x;
+            var toY = prevNodes[toNode.id].y;
+            var prevFromX = 0;
+            var prevFromY = 0;
+            var prevToX = 0;
+            var prevToY = 0;
+            var appear = true;
+
+            var prevPath = this.state.prevPaths[pathId];
+
+            if (typeof prevPath !== 'undefined') {
+                prevFromX = prevPath.fromX;
+                prevFromY = prevPath.fromY;
+                prevToX = prevPath.toX;
+                prevToX = prevPath.toY;
+                appear = false;
+            }
+
+            var path = (<Path id={path.id}
+                key={path.id}
+                fromX={fromX}
+                fromY={fromY}
+                toX={toX}
+                toY={toY}
+                prevFromX={prevFromX}
+                prevFromY={prevFromY}
+                prevToX={prevToX}
+                prevToY={prevToY}
+                appear={appear}
+                />) 
+
+            paths.push(path);
+            prevPaths[pathId] = {fromX:fromX, fromY:fromY,
+            toX: toX, toY: toY};
+
+        }
+
+        this.setState({nodes: nodes, prevNodes: prevNodes,
+        paths: paths, prevPaths: prevPaths});
     }
 
     renderContent() {
-        const paths = [];
                 
         return(
             <div className='tree'> 
 
             <TransitionGroup>
+            { this.state.paths }
             { this.state.nodes }
-            { paths }
             </TransitionGroup>
 
             </div>
