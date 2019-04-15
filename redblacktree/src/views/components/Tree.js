@@ -30,8 +30,8 @@ class Tree extends Component {
     componentDidMount() {
         this.setState({
             dimensions: {
-                width: this.container.offsetWidth,
-                height: this.container.offsetHeight,
+                width: this.container.offsetWidth - 120,
+                height: this.container.offsetHeight - 120,
             },
         });
     }
