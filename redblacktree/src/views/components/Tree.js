@@ -148,8 +148,6 @@ class Tree extends Component {
         var pathMap = to.getPathMap();
         var prevPathMap = from.getPathMap(); 
         var pathIds = Object.getOwnPropertyNames(pathMap);
-
-        //console.log(pathIds)
         // Create paths.
         for (var i=0; i < pathIds.length; i++) {
             var path = pathMap[pathIds[i]];
@@ -177,6 +175,8 @@ class Tree extends Component {
                 prevToX = prevPath.toY;
                 appear = false;
             }
+
+            console.log(path.id)
 
             var path = (<Path id={path.id}
                 key={path.id}

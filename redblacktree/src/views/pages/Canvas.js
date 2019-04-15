@@ -61,7 +61,6 @@ export default class Canvas extends Component {
            taskStrings.push(taskString);
 
         });
-        console.log(taskArray, taskStrings)
 
         this.setState({
             tasks: taskArray,

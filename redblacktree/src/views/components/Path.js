@@ -53,7 +53,7 @@ class Path extends Component {
                  x1={this.props.toX + paddingX} 
                  y1={this.props.toY+paddingY} 
             borderColor={'grey'}
-            borderWidth={'3px'}
+            borderWidth={3}
             ref={c => this.container = c} 
             className='path'
             style={styles}/>

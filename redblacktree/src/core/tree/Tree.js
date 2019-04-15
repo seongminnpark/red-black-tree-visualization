@@ -471,14 +471,14 @@ export default class Tree {
             var id = node.id + leftChild.id; 
             map[id] = {from: node.id, to:leftChild.id}
 
-            this.getPathMapRecursive(this.leftChild, map);
+            this.getPathMapRecursive(node.leftChild, map);
         }
 
         if (rightChild != null) {
             var id = node.id + rightChild.id; 
             map[id] = {from: node.id, to:rightChild.id}
 
-            this.getPathMapRecursive(this.rightChild, map);
+            this.getPathMapRecursive(node.rightChild, map);
         }
 
     }
