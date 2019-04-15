@@ -291,6 +291,38 @@ export default class Tree {
         this.printSubtree(node.rightChild);
     } 
 
+    // Lookup.
+    lookup(jobId, data) {
+        this.logger.createEvent(jobId);
+        var id = this.bstLookup(jobId, this.root, data);
+        if (id == null) { 
+            this.logger.log(jobId, TreeLogger.NOT_FOUND, null, null, null, data);
+        }
+    }
+
+    bstLookup(jobId, node, data) {
+        if (node == null) {
+            return null;
+        }
+ 
+        this.logger.log(jobId, TreeLogger.LOOK, node.id, null, null, null);
+        if (node.data === data) {
+            this.logger.log(jobId, TreeLogger.FOUND, node.id, null, null, data);
+            return node.id; 
+        } 
+
+        var left = this.bstLookup(this.leftChild);
+        if (left != null) {
+            return left;
+        }
+        var right = this.bstLookup(this.rightChild);
+        if (right != null) {
+            return right;
+        }
+
+        return null;
+    }
+
     // Insertion functions. 
     
     insert(jobId, data) {
@@ -455,6 +487,8 @@ export default class Tree {
 export class TreeLogger {
 
     static get LOOK() { return 'LOOK'; }
+    static get NOT_FOUND() { return 'NOT_FOUND'; }
+    static get FOUND() { return 'FOUND'; }
     static get COMPARE() { return 'COMPARE'; }
     static get INSERT() { return 'INSERT'; }
     static get ROTATE() { return 'ROTATE'; }

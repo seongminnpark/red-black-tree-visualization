@@ -19,6 +19,7 @@ export default class Canvas extends Component {
         super(props); 
         this.handleInsert = this.handleInsert.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleLookup = this.handleLookup.bind(this);
         this.parseTasks = this.parseTasks.bind(this);
         this.handleNext = this.handleNext.bind(this);
         this.handlePrev = this.handlePrev.bind(this);
@@ -60,6 +61,7 @@ export default class Canvas extends Component {
            taskStrings.push(taskString);
 
         });
+        console.log(taskArray, taskStrings)
 
         this.setState({
             tasks: taskArray,
@@ -72,6 +74,12 @@ export default class Canvas extends Component {
         switch (task.type) {
             case TreeLogger.LOOK:
                 taskString = 'Look at node ' + task.nodeId;
+                break;
+            case TreeLogger.FOUND:
+                taskString = task.extra + ' found at node ' + task.nodeId;
+                break;
+            case TreeLogger.NOT_FOUND:
+                taskString = 'Could not find ' + task.extra;
                 break;
             case TreeLogger.COMPARE:
                 taskString = 'Compare with node ' + task.nodeId;
@@ -105,7 +113,7 @@ export default class Canvas extends Component {
             originalSnapshot = this.state.tree.snapshot();
         }
     
-        var jobId = data.toString() + ':' + Tree.INSERT;
+        var jobId = data.toString() + ':' + 'insert';
 
         this.state.tree.insert(jobId, data);
 
@@ -130,6 +138,38 @@ export default class Canvas extends Component {
 
     handleDelete(data) {
 
+    }
+
+    handleLookup(data) {
+
+        var originalSnapshot = this.state.snapshot;
+
+        if (originalSnapshot  == null) {
+            originalSnapshot = this.state.tree.snapshot();
+        }
+    
+        var jobId = data.toString() + ':' + 'lookup';
+
+        var id = this.state.tree.lookup(jobId, data);
+
+        var tasks = this.state.tree.logger.getLogs(jobId);
+        this.parseTasks(tasks);
+
+        var snapshots = [];
+        var snapshot = originalSnapshot; 
+        tasks.map((task) => {  
+            snapshot = snapshot.getSnapshotFromDiff(task);
+            snapshots.push(snapshot);
+        });
+
+
+        this.setState({
+            //nodeMap: this.state.tree.compile(),
+            jobId: jobId,
+            taskId: 0,
+            snapshot: snapshot,
+            snapshots: snapshots
+        });
     }
 
     handleNext() {
@@ -184,6 +224,7 @@ export default class Canvas extends Component {
                 <div className='inputGroup'>
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>
+                    <Input placeHolder={'Lookup'} onInput={this.handleLookup}/>
                 </div> 
 
                 <Controls
