@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { TweenMax } from 'gsap';
+
 import './Styles/Node.css';
 
 const SLOT_SIZE = 70;
@@ -17,34 +19,25 @@ class Node extends Component{
     }
 
     get idTextColor() { return ''; }
-    
-    get dataTextColor() { return ''; }
-    
-    calculateLeft(path, level, treeWidth) {
-        if (path.length != level) {
-            console.log("Funky nodepath!!!");
-        }
 
-        var maxWidth = SLOT_SIZE * treeWidth; 
-        var left = this.partitionWidth(0, treeWidth, path);
-        return left;
+    get dataTextColor() { return ''; } 
+
+    componentDidUpdate(prevProps, prevState) {
+        const el = this.container;
+        TweenMax.fromTo(el, 0.3, 
+            {x: this.props.prevX, y: this.props.prevY},
+            {x: this.props.x, y: this.props.y});
     }
 
-    partitionWidth(low, high, path) {
-        var half = (high+low) / 2.0
-        if (path == '') {
-            return half;
+    componentDidMount() {
+        const el = this.container;
+        TweenMax.fromTo(el, 0.3, 
+            {x: this.props.x, y: this.props.y, width: 0, height:0},
+            {x: this.props.x, y: this.props.y, width: Node.SIZE, height: Node.SIZE});
 
-        } else if (path[0] == 'L') {
-            return this.partitionWidth(low, half, path.slice(1));
-
-        } else {
-            return this.partitionWidth(half, high, path.slice(1));
-        }
     }
 
     render() {
-
         const halfSize = Node.SIZE / 2;
 
         var left = this.props.x - halfSize;
@@ -54,16 +47,17 @@ class Node extends Component{
 
         var styles = {
             position: 'absolute',
-            left: left + 'px',
-            top: top + 'px',
+            //left: left + 'px',
+            //top: top + 'px',
             width: Node.SIZE,
             height: Node.SIZE,
             backgroundColor: this.props.color
         };
 
         return (
-           <div className='node' 
-                style={styles}>
+            <div className='node'
+            ref={c => this.container = c}
+            style={styles}>
             <div className='nodeData'>{this.props.data}</div> 
             </div>
         )
@@ -77,6 +71,9 @@ Node.propTypes = {
     treeDepth: PropTypes.number,
     x: PropTypes.number,
     y: PropTypes.number,
+    prevX: PropTypes.number,
+    prevY: PropTypes.number,
+    appear: PropTypes.bool,
 };
 
 export default Node;

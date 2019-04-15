@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import TransitionGroup from 'react-addons-transition-group';
 
 import './Styles/Tree.css';
 import TreeCore, { NodeCore, TreeLogger } from '../../core/tree/Tree';
@@ -7,14 +8,19 @@ import Node from './Node';
 
 
 class Tree extends Component { 
+
     constructor(props) {
         super(props);
         this.handleInsert = this.handleInsert.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.renderContent = this.renderContent.bind(this);
+        this.getDelta = this.getDelta.bind(this);
         this.state = {
             snapshot: null,
-            dimension: null
+            dimension: null,
+            nodes: [],
+            prevTaskId: 0,
+            prevNodes: {}
         }
     }
 
@@ -25,6 +31,13 @@ class Tree extends Component {
                 height: this.container.offsetHeight,
             },
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+        var snapshot = nextProps.snapshots[nextProps.taskId];
+        var prevSnapshot = this.props.snapshots[this.props.taskId];
+
+        this.getDelta(prevSnapshot, snapshot);
     }
 
     handleInsert(task) {
@@ -58,50 +71,71 @@ class Tree extends Component {
         }
     }
 
-
-    renderContent() {
-        const nodes = [];
-        const paths = [];
-
-        var snapshot = this.props.snapshots[this.props.taskId];
+    getDelta(from, to) {
+        
+        var nodes = [];
+        var prevNodes = {};
+        
         var width = this.state.dimensions.width;
         var height = this.state.dimensions.height;
 
-        var nodeMap = snapshot.compile();
+        var nodeMap = to.compile(); 
+        var prevNodeMap = from.compile();
+
         let levels = Object.getOwnPropertyNames(nodeMap);
         let depth = levels.length;
         let treeDepth = depth-1;
-        
+
         for (var i=0; i < depth; i++) {
             let level = levels[i];
             let nodesAtLevel = nodeMap[level];
             for (var j=0; j < nodesAtLevel.length; j++) {
                 let nodeId = nodesAtLevel[j];
                 if (nodeId != null) {
-                    var nodeObj = snapshot.getNode(nodeId);
-                    //console.log(nodeObj);
+                    var nodeObj = to.getNode(nodeId);
                     var x = this.calculateX(nodeObj.nodePath, level, width);
                     var y = level * Node.SIZE;
+                    var prevX = 0;
+                    var prevY = 0;
+                    var appear = true;
+                    var prevNode = this.state.prevNodes[nodeId];
+                    if (typeof prevNode !== 'undefined') {
+                        prevX = prevNode.x;
+                        prevY = prevNode.y;
+                        appear = false;
+                    } else {
+                    }
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
                         index={j} 
                         key={nodeId}
                         data={nodeObj.data}
-                        nodePath={nodeObj.nodePath}
                         x={x}
                         y={y}
-                        color={nodeObj.color}
-                        treeDepth={depth-1}/>)
+                        prevX={prevX} 
+                        prevY={prevY}
+                        appear={appear}
+                        color={nodeObj.color}/>)
                     nodes.push(node);
+                    prevNodes[nodeId] = {x:x, y:y};
                 }
             }
 
         }
+ 
+        this.setState({nodes: nodes, prevNodes: prevNodes});
+    }
+
+    renderContent() {
+        const paths = [];
+                
         return(
             <div className='tree'> 
 
-            { nodes }
+            <TransitionGroup>
+            { this.state.nodes }
             { paths }
+            </TransitionGroup>
 
             </div>
         );
