@@ -5,6 +5,7 @@ export class Node {
     static get ROOT() { return 'ROOT'; }
     static get LEFT() { return 'LEFT'; }
     static get RIGHT() { return 'RIGHT'; }
+    static get INCREMENT() { return 'INCREMENT'; }
 
     static get RED() { return 'RED'; }
     static get BLACK() { return 'BLACK'; }
@@ -315,8 +316,10 @@ export default class Tree {
 
             if (node.data === data) {
                 this.logger.log(jobId, TreeLogger.COMPARE, node.id, null, null, null);
+                var newId = this.insertAt(node, Node.INCREMENT, data);
+                this.logger.log(jobId, TreeLogger.INSERT, newId, node.id, Node.INCREMENT, data);
                 node.count += 1;
-                return null;
+                return newId;
 
             } else if (node.data > data) {
 
@@ -345,6 +348,11 @@ export default class Tree {
 
     insertAt(parent, direction, data) {
 
+        if (direction === Node.INCREMENT) {
+            parent.count += 1;
+            return null; 
+        }
+
         var newNode = new Node();
         newNode.data = data;
         newNode.parent = parent;
@@ -365,7 +373,8 @@ export default class Tree {
         } else if (direction === Node.RIGHT) {
             newNode.nodePath = parent.nodePath + 'R';
             parent.rightChild = newNode; 
-        }
+
+        } 
 
         return newId;
     }

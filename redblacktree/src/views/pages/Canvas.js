@@ -164,7 +164,7 @@ export default class Canvas extends Component {
 
                 <Controls
                     data={this.state.taskStrings} 
-                    active={this.state.taskIndex} 
+                    active={this.state.taskId} 
                     onNext={this.handleNext}
                     onPrev={this.handlePrev}
                 />

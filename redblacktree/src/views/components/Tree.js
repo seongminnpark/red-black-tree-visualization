@@ -110,6 +110,7 @@ class Tree extends Component {
                         index={j} 
                         key={nodeId}
                         data={nodeObj.data}
+                        count={nodeObj.count}
                         x={x}
                         y={y}
                         prevX={prevX} 

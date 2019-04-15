@@ -58,7 +58,10 @@ class Node extends Component{
             <div className='node'
             ref={c => this.container = c}
             style={styles}>
-            <div className='nodeData'>{this.props.data}</div> 
+            <div className='nodeDataContainer'>
+                <div className='nodeData'>{this.props.data}</div>
+                <div className='nodeCount'>count: {this.props.count}</div>
+            </div> 
             </div>
         )
     }
