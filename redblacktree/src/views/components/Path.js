@@ -11,10 +11,10 @@ class Path extends Component {
        const el = this.container;
        TweenMax.fromTo(el, 0.3, 
            {attr:{x1: this.props.prevFromX, y1: this.props.prevFromY,
-            y2: this.props.prevToX, y2h: this.props.prevToY}},
+            x2: this.props.prevToX, y2: this.props.prevToY}},
 
            {attr:{x1: this.props.fromX, y1: this.props.fromY,
-            y2: this.props.toX, y2h: this.props.toY}}
+            x2: this.props.toX, y2: this.props.toY}}
        );
    }
 
@@ -23,11 +23,11 @@ class Path extends Component {
 
         TweenMax.fromTo(el, 0.3, 
            {attr:{x1: this.props.fromX, y1: this.props.fromY,
-            y2: this.props.toX, y2h: this.props.toY},
+            x2: this.props.toX, y2: this.props.toY},
            opacity: 0},
 
            {attr:{x1: this.props.fromX, y1: this.props.fromY,
-            y2: this.props.toX, y2h: this.props.toY},
+            x2: this.props.toX, y2: this.props.toY},
            opacity: 1}
        );
 
@@ -43,12 +43,13 @@ class Path extends Component {
         return (
 
             <svg className='path' 
-                ref={c => this.container = c}
+                
                 style={{
-                    position:'absolute'}}
+                    position:'absolute',
+                }}
             >
 
-            <line style={styles} 
+            <line ref={c => this.container = c} style={styles} 
                 x1={this.props.fromX} 
                 y1={this.props.fromY} 
                 x2={this.props.toX} 
