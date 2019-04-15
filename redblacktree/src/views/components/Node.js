@@ -54,6 +54,10 @@ class Node extends Component{
             backgroundColor: this.props.color
         };
 
+        if (this.props.active) {
+            styles.border = '10px solid coral';
+        }
+
         return (
             <div className='node'
             ref={c => this.container = c}

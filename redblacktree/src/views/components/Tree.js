@@ -109,6 +109,12 @@ class Tree extends Component {
                         appear = false;
                     } else {
                     }
+
+                    var active = false;
+                    console.log(this.props.activeNodes);
+                    if (this.props.activeNodes.includes(nodeId)) {
+                        active = true;
+                    }
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
                         index={j} 
@@ -120,6 +126,7 @@ class Tree extends Component {
                         prevX={prevX} 
                         prevY={prevY}
                         appear={appear}
+                        active={active}
                         color={nodeObj.color}/>)
                     nodes.push(node);
                     prevNodes[nodeId] = {x:x, y:y};
@@ -135,7 +142,7 @@ class Tree extends Component {
         var prevPathMap = from.getPathMap(); 
         var pathIds = Object.getOwnPropertyNames(pathMap);
 
-        console.log(pathIds)
+        //console.log(pathIds)
         // Create paths.
         for (var i=0; i < pathIds.length; i++) {
             var path = pathMap[pathIds[i]];
@@ -214,7 +221,8 @@ class Tree extends Component {
 Tree.propTypes = {
     snapshots: PropTypes.array,
     taskId: PropTypes.number,
-    tree: PropTypes.object  
+    tree: PropTypes.object, 
+    activeNodes: PropTypes.array
 }
 
 export default Tree;

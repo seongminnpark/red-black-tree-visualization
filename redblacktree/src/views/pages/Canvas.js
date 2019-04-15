@@ -150,13 +150,32 @@ export default class Canvas extends Component {
         this.setState({taskId: taskId});
     }
 
+    getActiveNodes(tasks, taskId) {
+        if (taskId >= tasks.length) {
+            return [];
+        }
+        var task = tasks[taskId];
+        var taskArray = [];
+        if (task.type === TreeLogger.LOOK) {
+            taskArray.push(task.nodeId);
+        } else if (task.type === TreeLogger.COMPARE) {
+            taskArray.push(task.nodeId);
+        }
+        
+        return taskArray;
+
+    }
+
     render() {
+
+        var activeNodes = this.getActiveNodes(this.state.tasks, this.state.taskId);
         return (
             <div className='canvas'> 
             
                 <Tree snapshots={this.state.snapshots}
                       taskId={this.state.taskId}
-                      tree={this.state.tree}/>
+                      tree={this.state.tree}
+                      activeNodes={activeNodes}/>
                 <div className='inputGroup'>
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>
