@@ -155,14 +155,18 @@ export default class Canvas extends Component {
             return [];
         }
         var task = tasks[taskId];
-        var taskArray = [];
+        var lookArray = [];
+        var compareArray = [];
+        var errorArray = [];
         if (task.type === TreeLogger.LOOK) {
-            taskArray.push(task.nodeId);
+            lookArray.push(task.nodeId);
         } else if (task.type === TreeLogger.COMPARE) {
-            taskArray.push(task.nodeId);
+            compareArray.push(task.nodeId);
+        } else if (task.type === TreeLogger.ERROR) {
+            errorArray.push(task.nodeId);
         }
         
-        return taskArray;
+        return [lookArray, compareArray, errorArray];
 
     }
 
@@ -175,7 +179,8 @@ export default class Canvas extends Component {
                 <Tree snapshots={this.state.snapshots}
                       taskId={this.state.taskId}
                       tree={this.state.tree}
-                      activeNodes={activeNodes}/>
+                      activeNodes={activeNodes}
+            />
                 <div className='inputGroup'>
                     <Input placeHolder={'Insert'} onInput={this.handleInsert}/>
                     <Input placeHolder={'Delete'} onInput={this.handleDelete}/>

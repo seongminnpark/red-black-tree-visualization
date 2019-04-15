@@ -40,7 +40,7 @@ class Tree extends Component {
         var snapshot = nextProps.snapshots[nextProps.taskId];
         var prevSnapshot = this.props.snapshots[this.props.taskId];
 
-        this.getDelta(prevSnapshot, snapshot);
+        this.getDelta(prevSnapshot, snapshot, nextProps.activeNodes);
     }
 
     handleInsert(task) {
@@ -74,7 +74,7 @@ class Tree extends Component {
         }
     }
 
-    getDelta(from, to) {
+    getDelta(from, to, activeNodes) {
         
         var nodes = [];
         var prevNodes = {};
@@ -110,10 +110,15 @@ class Tree extends Component {
                     } else {
                     }
 
-                    var active = false;
-                    console.log(this.props.activeNodes);
-                    if (this.props.activeNodes.includes(nodeId)) {
-                        active = true;
+                    var look = false;
+                    var compare = false;
+                    var error = false;
+                    if (activeNodes[0].includes(nodeId)) {
+                        look = true;
+                    } else if (activeNodes[1].includes(nodeId)) {
+                        compare = true;
+                    } else if (activeNodes[2].includes(nodeId)) {
+                        error = true;
                     }
                     var node = (<Node id={nodeId}
                         level={parseInt(level)} 
@@ -126,7 +131,9 @@ class Tree extends Component {
                         prevX={prevX} 
                         prevY={prevY}
                         appear={appear}
-                        active={active}
+                        look={look}
+                        error={error}
+                        compare={compare}
                         color={nodeObj.color}/>)
                     nodes.push(node);
                     prevNodes[nodeId] = {x:x, y:y};
@@ -222,7 +229,7 @@ Tree.propTypes = {
     snapshots: PropTypes.array,
     taskId: PropTypes.number,
     tree: PropTypes.object, 
-    activeNodes: PropTypes.array
+    activeNodes: PropTypes.array,
 }
 
 export default Tree;

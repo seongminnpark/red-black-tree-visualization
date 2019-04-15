@@ -54,7 +54,11 @@ class Node extends Component{
             backgroundColor: this.props.color
         };
 
-        if (this.props.active) {
+        if (this.props.look) {
+            styles.border = '10px solid green';
+        } else if (this.props.compare) {
+            styles.border = '10px solid blue';
+        } else if (this.props.error) {
             styles.border = '10px solid coral';
         }
 
@@ -80,7 +84,9 @@ Node.propTypes = {
     y: PropTypes.number,
     prevX: PropTypes.number,
     prevY: PropTypes.number,
-    appear: PropTypes.bool,
+    look: PropTypes.bool,
+    error: PropTypes.bool,
+    compare: PropTypes.bool,
 };
 
 export default Node;
