@@ -24,26 +24,28 @@ class Node extends Component{
 
     componentDidUpdate(prevProps, prevState) {
         const el = this.container;
+        const halfSize = Node.SIZE/2;
+        var prevLeft = this.props.prevX - halfSize;
+        var prevTop = this.props.prevY - halfSize;
+        var left = this.props.x - halfSize;
+        var top = this.props.y - halfSize;
         TweenMax.fromTo(el, 0.3, 
-            {x: this.props.prevX, y: this.props.prevY},
-            {x: this.props.x, y: this.props.y});
+            {x: prevLeft, y: prevTop},
+            {x: left, y: top});
     }
 
     componentDidMount() {
         const el = this.container;
+        const halfSize = Node.SIZE/2;
+        var left = this.props.x - halfSize;
+        var top = this.props.y - halfSize;
         TweenMax.fromTo(el, 0.3, 
-            {x: this.props.x, y: this.props.y, width: 0, height:0},
-            {x: this.props.x, y: this.props.y, width: Node.SIZE, height: Node.SIZE});
+            {x: left, y: top, width: 0, height:0},
+            {x: left, y: top, width: Node.SIZE, height: Node.SIZE});
 
     }
 
     render() {
-        const halfSize = Node.SIZE / 2;
-
-        var left = this.props.x - halfSize;
-        var right = this.props.x + halfSize;
-        var top = this.props.y - halfSize;
-        var bottom = this.props.y - halfSize;
 
         var styles = {
             position: 'absolute',
@@ -51,7 +53,8 @@ class Node extends Component{
             //top: top + 'px',
             width: Node.SIZE,
             height: Node.SIZE,
-            backgroundColor: this.props.color
+            backgroundColor: this.props.color,
+            zIndex: 99
         };
 
         if (this.props.look) {

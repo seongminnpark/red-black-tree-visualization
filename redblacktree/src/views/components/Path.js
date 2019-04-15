@@ -11,8 +11,6 @@ class Path extends Component {
 
    componentDidUpdate(prevProps, prevState) {
        const el = this.container;
-        console.log('here')
-        console.log(this.props.fromX, this.props.fromY, this.props.toX, this.props.toY);
        TweenMax.fromTo(el, 0.3, 
            {x0: this.props.prevFromX, y0: this.props.prevFromY,
             x1: this.props.prevToX, y1: this.props.prevToY},
@@ -24,9 +22,6 @@ class Path extends Component {
 
     componentDidMount() {
         const el = this.container;
-
-        console.log('here1')
-        console.log(this.props.fromX, this.props.fromY, this.props.toX, this.props.toY);
 
         TweenMax.fromTo(el, 0.3, 
            {x0: this.props.fromX, y0: this.props.fromY,
@@ -44,13 +39,21 @@ class Path extends Component {
 
         var styles = {
             position: 'absolute',
-            stroke:'#000000'
+            stroke:'#000000',
+            zIndex: 0
         }
+
+        const paddingX = 60;
+        const paddingY = 60;
 
         return (
 
-           <Line x0={this.props.fromX} y0={this.props.fromY} 
-            x1={this.props.toX} y1={this.props.toY} 
+           <Line x0={this.props.fromX + paddingX} 
+                 y0={this.props.fromY+paddingY} 
+                 x1={this.props.toX + paddingX} 
+                 y1={this.props.toY+paddingY} 
+            borderColor={'grey'}
+            borderWidth={'3px'}
             ref={c => this.container = c} 
             className='path'
             style={styles}/>
